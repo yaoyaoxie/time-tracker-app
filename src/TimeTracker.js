@@ -12,6 +12,7 @@ const TimeTracker = () => {
   const [startTime, setStartTime] = useState(null);
   const [currentTime, setCurrentTime] = useState(new Date());
   const [view, setView] = useState('today'); // 'today', 'week', 'month'
+  const [taskCategory, setTaskCategory] = useState('工作'); // 默认类别
 
   // 存储任务到本地
   useEffect(() => {
@@ -35,7 +36,7 @@ const TimeTracker = () => {
       name: newTask,
       records: [],
       totalTime: 0,
-      category: '工作', // 默认类别
+      category: taskCategory,
       color: getRandomColor()
     };
     
@@ -143,28 +144,48 @@ const TimeTracker = () => {
     return filteredRecords.reduce((total, record) => total + record.duration, 0);
   };
 
-  // 任务分类
+  // 可选的任务分类列表
   const categories = ['工作', '学习', '娱乐', '健康', '个人'];
+  
+  // 切换任务类别
+  const handleCategoryChange = (category) => {
+    setTaskCategory(category);
+  };
 
   return (
     <div className="max-w-4xl mx-auto p-4 bg-gray-50 min-h-screen">
       <h1 className="text-3xl font-bold text-center my-6 text-gray-800">时间管理助手</h1>
       
       {/* 添加新任务 */}
-      <div className="flex mb-6">
-        <input
-          type="text"
-          value={newTask}
-          onChange={(e) => setNewTask(e.target.value)}
-          placeholder="添加新任务..."
-          className="flex-grow p-2 border border-gray-300 rounded-l"
-        />
-        <button
-          onClick={handleAddTask}
-          className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600"
-        >
-          添加
-        </button>
+      <div className="mb-6">
+        <div className="flex mb-2">
+          <input
+            type="text"
+            value={newTask}
+            onChange={(e) => setNewTask(e.target.value)}
+            placeholder="添加新任务..."
+            className="flex-grow p-2 border border-gray-300 rounded-l"
+          />
+          <button
+            onClick={handleAddTask}
+            className="bg-blue-500 text-white px-4 py-2 rounded-r hover:bg-blue-600"
+          >
+            添加
+          </button>
+        </div>
+        
+        {/* 类别选择器 */}
+        <div className="flex flex-wrap gap-2">
+          {categories.map(category => (
+            <button
+              key={category}
+              onClick={() => handleCategoryChange(category)}
+              className={`px-3 py-1 rounded text-sm ${taskCategory === category ? 'bg-blue-500 text-white' : 'bg-gray-200'}`}
+            >
+              {category}
+            </button>
+          ))}
+        </div>
       </div>
       
       {/* 视图切换 */}
